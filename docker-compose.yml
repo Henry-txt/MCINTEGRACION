@@ -1,0 +1,46 @@
+version: '3.9'
+
+networks:
+  net: {}
+  
+services:
+  operacion:
+    build: ./operacion
+    ports:
+      - "3001:3001"
+    networks:
+      - net
+    depends_on:
+      - dbmysql
+
+  user:
+    build: ./user
+    ports:
+      - "3002:3002"
+    networks:
+      - net
+    depends_on:
+      - dbmysql
+
+  crud:
+    build: ./crud
+    ports:
+      - "3003:3003"
+    networks:
+      - net
+    depends_on:
+      - dbmysql
+  
+  dbmysql:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: on-failure
+    volumes:
+      - ./database/db:/var/lib/mysql:rw
+    environment:
+      MYSQL_ROOT_PASSWORD: integracion
+      MYSQL_DATABASE: db-examen
+    ports:
+      - "3309:3306"
+    networks:
+      - net
